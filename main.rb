@@ -19,4 +19,33 @@ File.open('chair.txt', 'r') do |file|
   #the final result is an array of length 20 consisting of small arrays of length 3 containing the ordered preferences of every person
 end
 
-puts preferences.inspect
+#creates a weight matrix where every element can be 0, 1, 2 or 99
+cost_matrix = Array.new(20)
+cost_matrix.collect!{|line| line = Array.new(20).collect{|c| c = 99}}
+
+#brings the values from the preferences matrix to the cost matrix
+(0..preferences.length-1).each do |person|
+  cost_matrix[person][preferences[person][0]-1] = 0
+  cost_matrix[person][preferences[person][1]-1] = 1
+  cost_matrix[person][preferences[person][2]-1] = 2
+end
+
+cost_matrix.each do |line|
+  puts line.inspect
+end
+
+
+#row minima is already subtracted, so let's subtract the col minima
+(0..19).each do |i|
+  min = 99
+  (0..19).each do |j|
+    min = cost_matrix[j][i] if(cost_matrix[j][i] < min)
+  end
+  (0..19).each do |j|
+    cost_matrix[j][i] = cost_matrix[j][i] - min
+  end
+end
+
+cost_matrix.each do |line|
+  puts line.inspect
+end
