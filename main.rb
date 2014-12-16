@@ -1,6 +1,11 @@
+def find_vertex_cover adjacency_matrix
+  return []
+end
+
 def find_maximum_matching adjacency_matrix
   return []
 end
+
 
 def perfect_matching? adjacency_matrix
   if matching == []
@@ -10,9 +15,12 @@ def perfect_matching? adjacency_matrix
   end
 end
 
+
+
 def hungarian_algorithm adjacency_matrix
   matching = []
   until perfect_matching? adjacency_matrix, matching
+    vertex_cover = find_vertex_cover adjacency_matrix
     matching = find_maximum_matching adjacency_matrix
   end
   return matching
