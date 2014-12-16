@@ -1,3 +1,26 @@
+def find_maximum_matching adjacency_matrix
+  return []
+end
+
+def perfect_matching? adjacency_matrix
+  if matching == []
+    false
+  else
+    true
+  end
+end
+
+def hungarian_algorithm adjacency_matrix
+  matching = []
+  until perfect_matching? adjacency_matrix, matching
+    matching = find_maximum_matching adjacency_matrix
+  end
+  return matching
+end
+
+
+
+
 #First of all, an array has to be created to store the preferences of every person
 preferences = Array.new
 
@@ -30,11 +53,6 @@ cost_matrix.collect!{|line| line = Array.new(20).collect{|c| c = 99}}
   cost_matrix[person][preferences[person][2]-1] = 2
 end
 
-cost_matrix.each do |line|
-  puts line.inspect
-end
-
-
 #row minima is already subtracted, so let's subtract the col minima
 (0..19).each do |i|
   min = 99
@@ -46,6 +64,4 @@ end
   end
 end
 
-cost_matrix.each do |line|
-  puts line.inspect
-end
+hungarian_algorithm(cost_matrix)
