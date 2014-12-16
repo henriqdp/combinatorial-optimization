@@ -2,8 +2,18 @@ require './matching/maxmatch.rb'
 
 $PROBLEM_SIZE = 0
 
-def find_vertex_cover adjacency_matrix
-  return []
+def find_minimum_vertex_cover matching, cost_matrix
+  result = matching.keys
+  (0..$PROBLEM_SIZE-1).each do |i|
+    if result.index(i).nil?
+      (0..$PROBLEM_SIZE-1).each do |j|
+        if(result.index(j).nil? && cost_matrix[i][j] == 0)
+          result << i
+        end
+      end
+    end
+  end
+  return result
 end
 
 def find_maximum_matching(cost_matrix)
@@ -17,20 +27,68 @@ def find_maximum_matching(cost_matrix)
       edges[person]["committee#{committee}".to_sym] = 0 if cost_matrix[person][committee] == 0
     end
   end
-  return Graphmatch.match(left, right.collect{|c| c = "committee#{c}".to_sym}, edges).size
+  return Graphmatch.match(left, right.collect{|c| c = "committee#{c}".to_sym}, edges)
 end
 
 def perfect_matching? matching
-  return matching.size >= $PROBLEM_SIZE
+  return matching.size == $PROBLEM_SIZE
 end
 
 def hungarian_algorithm adjacency_matrix
   matching = find_maximum_matching(adjacency_matrix)
   until perfect_matching? matching
 
-    #vertex_cover = find_vertex_cover adjacency_matrix
-    puts "change the cost matrix"
+
+    vertex_cover = find_minimum_vertex_cover matching, adjacency_matrix
+    min = 99
+    (0..$PROBLEM_SIZE - 1).each do |i|
+      (0..$PROBLEM_SIZE - 1).each do |j|
+        if(adjacency_matrix[i][j] < min && vertex_cover.index(i).nil? && vertex_cover.index(j).nil?)
+          min = adjacency_matrix[i][j]
+        end
+      end
+    end
+
+    puts "before correction:"
+    (0..$PROBLEM_SIZE - 1).each do |i|
+      (0..$PROBLEM_SIZE - 1).each do |j|
+        if(vertex_cover.index(i).nil? && vertex_cover.index(j).nil?)
+          printf "%3d " % adjacency_matrix[i][j]
+        else
+          printf "%3c " % 'x'
+        end
+      end
+      print "\n"
+    end
+
+
+    (0..$PROBLEM_SIZE - 1).each do |i|
+      (0..$PROBLEM_SIZE - 1).each do |j|
+        if(vertex_cover.index(i).nil? && vertex_cover.index(j).nil?)
+          adjacency_matrix[i][j] -= min
+        elsif(!vertex_cover.index(i).nil? && !vertex_cover.index(j).nil?)
+          adjacency_matrix[i][j] += min
+        end
+      end
+    end
+
+    puts "after correction:"
+    (0..$PROBLEM_SIZE - 1).each do |i|
+      (0..$PROBLEM_SIZE - 1).each do |j|
+        if(vertex_cover.index(i).nil? && vertex_cover.index(j).nil?)
+          printf "%3d " % adjacency_matrix[i][j]
+        else
+          printf "%3c " % 'x'
+        end
+      end
+      print "\n"
+    end
+
+    puts matching.inspect
+
     matching = find_maximum_matching adjacency_matrix
+    puts matching.size
+    a = gets
   end
   return matching
 end
