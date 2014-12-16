@@ -33,7 +33,7 @@ class Graphmatch::BellmanFord
         end
       end
     end
-    
+
     return distance, parent
   end
 end

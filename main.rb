@@ -1,36 +1,45 @@
 require './matching/maxmatch.rb'
 
+$PROBLEM_SIZE = 0
+
 def find_vertex_cover adjacency_matrix
   return []
 end
 
-def find_maximum_matching adjacency_matrix
-  return []
-end
+def find_maximum_matching(cost_matrix)
+  left  = Array(0..$PROBLEM_SIZE-1)
+  right = Array(0..$PROBLEM_SIZE-1)
 
-
-def perfect_matching? adjacency_matrix
-  if matching == []
-    false
-  else
-    true
+  edges = Hash.new
+  left.each do |person|
+    right.each do |committee|
+      edges[person] = Hash.new if edges[person].nil?
+      edges[person]["committee#{committee}".to_sym] = 0 if cost_matrix[person][committee] == 0
+    end
   end
+  return Graphmatch.match(left, right.collect{|c| c = "committee#{c}".to_sym}, edges).size
 end
 
-
+def perfect_matching? matching
+  return matching.size >= $PROBLEM_SIZE
+end
 
 def hungarian_algorithm adjacency_matrix
-  matching = []
-  until perfect_matching? adjacency_matrix, matching
-    vertex_cover = find_vertex_cover adjacency_matrix
-    fir
+  matching = find_maximum_matching(adjacency_matrix)
+  until perfect_matching? matching
+
+    #vertex_cover = find_vertex_cover adjacency_matrix
+    puts "change the cost matrix"
     matching = find_maximum_matching adjacency_matrix
   end
   return matching
 end
 
-
-
+#
+#
+# MAIN PROGRAM
+#
+#
 
 #First of all, an array has to be created to store the preferences of every person
 preferences = Array.new
@@ -53,6 +62,8 @@ File.open('chair.txt', 'r') do |file|
   #the final result is an array of length 20 consisting of small arrays of length 3 containing the ordered preferences of every person
 end
 
+$PROBLEM_SIZE = preferences.length
+
 #creates a weight matrix where every element can be 0, 1, 2 or 99
 cost_matrix = Array.new(20)
 cost_matrix.collect!{|line| line = Array.new(20).collect{|c| c = 99}}
@@ -64,7 +75,7 @@ cost_matrix.collect!{|line| line = Array.new(20).collect{|c| c = 99}}
   cost_matrix[person][preferences[person][2]-1] = 2
 end
 
-=begin
+
 #row minima is already subtracted, so let's subtract the col minima
 (0..19).each do |i|
   min = 99
@@ -75,8 +86,5 @@ end
     cost_matrix[j][i] = cost_matrix[j][i] - min
   end
 end
-=end
 
-
-
-#hungarian_algorithm(cost_matrix)
+hungarian_algorithm(cost_matrix)
