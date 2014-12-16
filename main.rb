@@ -1,3 +1,5 @@
+require './matching/maxmatch.rb'
+
 def find_vertex_cover adjacency_matrix
   return []
 end
@@ -21,6 +23,7 @@ def hungarian_algorithm adjacency_matrix
   matching = []
   until perfect_matching? adjacency_matrix, matching
     vertex_cover = find_vertex_cover adjacency_matrix
+    fir
     matching = find_maximum_matching adjacency_matrix
   end
   return matching
@@ -61,6 +64,7 @@ cost_matrix.collect!{|line| line = Array.new(20).collect{|c| c = 99}}
   cost_matrix[person][preferences[person][2]-1] = 2
 end
 
+=begin
 #row minima is already subtracted, so let's subtract the col minima
 (0..19).each do |i|
   min = 99
@@ -71,5 +75,8 @@ end
     cost_matrix[j][i] = cost_matrix[j][i] - min
   end
 end
+=end
 
-hungarian_algorithm(cost_matrix)
+
+
+#hungarian_algorithm(cost_matrix)
