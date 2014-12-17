@@ -33,6 +33,11 @@ class Graphmatch::MinimalVertexCover
       end
     end
 
+    (0..edges.size-1).each do |edge|
+      print "edge ##{edge} =>"
+      puts edges[edge].inspect
+    end
+
     edges_to_be_analyzed = Array.new
     z_set = Array.new
     (0..39).each do |i|
@@ -50,7 +55,7 @@ class Graphmatch::MinimalVertexCover
         if edge[1] == edges_to_be_analyzed[0][1] && !visited[edges_to_be_analyzed[0][0]]
           z_set << edge[0]
           edges_to_be_analyzed << [edge[0], !edges_to_be_analyzed[0][1]]
-          visited[edges_to_be_analyzed[0][0]] == true
+          visited[edges_to_be_analyzed[0][0]] = true
         end
       end
 

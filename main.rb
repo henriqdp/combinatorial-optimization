@@ -23,35 +23,50 @@ def perfect_matching? matching
   return matching.size == $PROBLEM_SIZE
 end
 
-
-def deep_copy(o)
-  Marshal.load(Marshal.dump(o))
-end
-
 def hungarian_algorithm adjacency_matrix
   edges = find_zero_weighted_edges(adjacency_matrix)
   left  = Array(0..$PROBLEM_SIZE-1)
   right = Array(0..$PROBLEM_SIZE-1)
-  edges2 = Hash[edges]
 
   matching = Graphmatch.match(left, right.collect{|c| c = "committee#{c}".to_sym}, Marshal.load(Marshal.dump(edges)))
   until perfect_matching? matching
 
 
     vertex_cover = find_minimum_vertex_cover matching, edges
+    puts vertex_cover.inspect
     min = 99
     (0..$PROBLEM_SIZE - 1).each do |i|
       (0..$PROBLEM_SIZE - 1).each do |j|
-        if(adjacency_matrix[i][j] < min && vertex_cover.index(i).nil? && vertex_cover.index(j).nil?)
+        if(adjacency_matrix[i][j] < min && vertex_cover.index(i).nil? && vertex_cover.index(j+20).nil?)
           min = adjacency_matrix[i][j]
         end
       end
     end
-=begin
     puts "before correction:"
     (0..$PROBLEM_SIZE - 1).each do |i|
       (0..$PROBLEM_SIZE - 1).each do |j|
-        if(vertex_cover.index(i).nil? && vertex_cover.index(j).nil?)
+        if(vertex_cover.index(i).nil? && vertex_cover.index(j+20).nil?)
+          printf "%3d " % adjacency_matrix[i][j]
+        else
+          printf "%3c " % 'x'
+        end
+      end
+      print "\n"
+    end
+    (0..$PROBLEM_SIZE - 1).each do |i|
+      (0..$PROBLEM_SIZE - 1).each do |j|
+        if(vertex_cover.index(i).nil? && vertex_cover.index(j+20).nil?)
+          adjacency_matrix[i][j] -= min
+        elsif(!vertex_cover.index(i).nil? && !vertex_cover.index(j+20).nil?)
+          adjacency_matrix[i][j] += min
+        end
+      end
+    end
+
+    puts "after correction(min = #{min}):"
+    (0..$PROBLEM_SIZE - 1).each do |i|
+      (0..$PROBLEM_SIZE - 1).each do |j|
+        if(vertex_cover.index(i).nil? || vertex_cover.index(j+20).nil?)
           printf "%3d " % adjacency_matrix[i][j]
         else
           printf "%3c " % 'x'
@@ -60,35 +75,14 @@ def hungarian_algorithm adjacency_matrix
       print "\n"
     end
 
-=end
-    (0..$PROBLEM_SIZE - 1).each do |i|
-      (0..$PROBLEM_SIZE - 1).each do |j|
-        if(vertex_cover.index(i).nil? && vertex_cover.index(j).nil?)
-          adjacency_matrix[i][j] -= min
-        elsif(!vertex_cover.index(i).nil? && !vertex_cover.index(j).nil?)
-          adjacency_matrix[i][j] += min
-        end
-      end
-    end
-=begin
-    puts "after correction:"
-    (0..$PROBLEM_SIZE - 1).each do |i|
-      (0..$PROBLEM_SIZE - 1).each do |j|
-        if(vertex_cover.index(i).nil? && vertex_cover.index(j).nil?)
-          printf "%3d " % adjacency_matrix[i][j]
-        else
-          printf "%3c " % 'x'
-        end
-      end
-      print "\n"
-    end
-=end
 
     edges = find_zero_weighted_edges(adjacency_matrix)
     left  = Array(0..$PROBLEM_SIZE-1)
     right = Array(0..$PROBLEM_SIZE-1)
     matching = Graphmatch.match(left, right.collect{|c| c = "committee#{c}".to_sym}, Marshal.load(Marshal.dump(edges)))
+    puts matching.size
     a = gets
+
   end
   return matching
 end
