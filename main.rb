@@ -1,45 +1,45 @@
 require './matching/maxmatch.rb'
+require './matching/minimalcover.rb'
 
 $PROBLEM_SIZE = 0
 
-def find_minimum_vertex_cover matching, cost_matrix
-  result = matching.keys
-  (0..$PROBLEM_SIZE-1).each do |i|
-    if result.index(i).nil?
-      (0..$PROBLEM_SIZE-1).each do |j|
-        if(result.index(j).nil? && cost_matrix[i][j] == 0)
-          result << i
-        end
-      end
-    end
-  end
-  return result
+def find_minimum_vertex_cover matching, edges
+  puts edges.inspect
+  minimal_cover = Graphmatch::MinimalVertexCover.new matching, edges
+  return minimal_cover.minimal_vertex_cover
 end
 
-def find_maximum_matching(cost_matrix)
-  left  = Array(0..$PROBLEM_SIZE-1)
-  right = Array(0..$PROBLEM_SIZE-1)
-
+def find_zero_weighted_edges(cost_matrix)
   edges = Hash.new
-  left.each do |person|
-    right.each do |committee|
+  (0..$PROBLEM_SIZE-1).each do |person|
+    (0..$PROBLEM_SIZE-1).each do |committee|
       edges[person] = Hash.new if edges[person].nil?
       edges[person]["committee#{committee}".to_sym] = 0 if cost_matrix[person][committee] == 0
     end
   end
-  return Graphmatch.match(left, right.collect{|c| c = "committee#{c}".to_sym}, edges)
+  return edges
 end
 
 def perfect_matching? matching
   return matching.size == $PROBLEM_SIZE
 end
 
+
+def deep_copy(o)
+  Marshal.load(Marshal.dump(o))
+end
+
 def hungarian_algorithm adjacency_matrix
-  matching = find_maximum_matching(adjacency_matrix)
+  edges = find_zero_weighted_edges(adjacency_matrix)
+  left  = Array(0..$PROBLEM_SIZE-1)
+  right = Array(0..$PROBLEM_SIZE-1)
+  edges2 = Hash[edges]
+
+  matching = Graphmatch.match(left, right.collect{|c| c = "committee#{c}".to_sym}, Marshal.load(Marshal.dump(edges)))
   until perfect_matching? matching
 
 
-    vertex_cover = find_minimum_vertex_cover matching, adjacency_matrix
+    vertex_cover = find_minimum_vertex_cover matching, edges
     min = 99
     (0..$PROBLEM_SIZE - 1).each do |i|
       (0..$PROBLEM_SIZE - 1).each do |j|
@@ -48,7 +48,7 @@ def hungarian_algorithm adjacency_matrix
         end
       end
     end
-
+=begin
     puts "before correction:"
     (0..$PROBLEM_SIZE - 1).each do |i|
       (0..$PROBLEM_SIZE - 1).each do |j|
@@ -61,7 +61,7 @@ def hungarian_algorithm adjacency_matrix
       print "\n"
     end
 
-
+=end
     (0..$PROBLEM_SIZE - 1).each do |i|
       (0..$PROBLEM_SIZE - 1).each do |j|
         if(vertex_cover.index(i).nil? && vertex_cover.index(j).nil?)
@@ -71,7 +71,7 @@ def hungarian_algorithm adjacency_matrix
         end
       end
     end
-
+=begin
     puts "after correction:"
     (0..$PROBLEM_SIZE - 1).each do |i|
       (0..$PROBLEM_SIZE - 1).each do |j|
@@ -83,11 +83,12 @@ def hungarian_algorithm adjacency_matrix
       end
       print "\n"
     end
+=end
 
-    puts matching.inspect
-
-    matching = find_maximum_matching adjacency_matrix
-    puts matching.size
+    edges = find_zero_weighted_edges(adjacency_matrix)
+    left  = Array(0..$PROBLEM_SIZE-1)
+    right = Array(0..$PROBLEM_SIZE-1)
+    matching = Graphmatch.match(left, right.collect{|c| c = "committee#{c}".to_sym}, Marshal.load(Marshal.dump(edges)))
     a = gets
   end
   return matching
