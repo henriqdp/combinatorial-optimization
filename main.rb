@@ -4,7 +4,6 @@ require './matching/minimalcover.rb'
 $PROBLEM_SIZE = 0
 
 def find_minimum_vertex_cover matching, edges
-  puts edges.inspect
   minimal_cover = Graphmatch::MinimalVertexCover.new matching, edges
   return minimal_cover.minimal_vertex_cover
 end
@@ -146,4 +145,4 @@ end
   end
 end
 
-hungarian_algorithm(cost_matrix)
+puts hungarian_algorithm(cost_matrix).inspect
