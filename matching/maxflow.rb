@@ -15,7 +15,8 @@ class Graphmatch::Maxflow
   # example [[:source, 'a'], ['a', 'c'], ['c', :sink]]
   #
   # Search parameter will switch it from a max-flow to min-cost max-flow search
-  def self.augmenting_path(graph, search = :shortest_path, source = :source, sink = :sink)
+  def self.augmenting_path(graph, search = :shortest_path,
+    source = :source, sink = :sink)
     if search == :shortest_path
       parents = Graphmatch::BFS.search graph, source, sink
     elsif search == :min_cost

@@ -2,7 +2,7 @@ class Graphmatch::MinimalVertexCover
 
 
   def initialize(maximal_matching, zero_weighted_graph)
-    
+
     #transforms the hash into an array
     #every person has a number from 0 to 19
     #every committee has a number from 20 to 39
@@ -54,7 +54,7 @@ class Graphmatch::MinimalVertexCover
     mincover = Array.new
     delete = Array.new
 
-    #vertices reached by no edges are automatically 
+    #vertices reached by no edges are automatically
     #added to the minimal cover
     edges_to_be_analyzed.each do |edge|
       if edges[edge[0]] == []
@@ -73,7 +73,7 @@ class Graphmatch::MinimalVertexCover
    while edges_to_be_analyzed.size > 0
       edge = edges_to_be_analyzed.shift
       visited[edge[0]] = true
-      if edge[1] == true 
+      if edge[1] == true
         edges[edge[0]].each do |connected_edge|
           if connected_edge[1] == false
             mincover << connected_edge[0]
@@ -90,7 +90,7 @@ class Graphmatch::MinimalVertexCover
    end
 
 
-#adds the nodes that do not belong to 
+#adds the nodes that do not belong to
 #alternating paths to the minimal cover
     (0..19).each do |person|
       edges[person].each do |v|

@@ -2,7 +2,8 @@ class Graphmatch::BellmanFord
   # Implementation of the Bellman-Ford algorithm
   #
   # Finds the min-cost between the starting vertex and all other vertices.
-  # returns distance, parent [Hash, Hash] distance from :source, parents of each vertex
+  # returns distance, parent [Hash, Hash] distance from :source,
+  #parents of each vertex
   def self.search(graph, source = :source)
     distance = {}
     parent = {}

@@ -11,7 +11,8 @@ class Knapsack
 	end
 
 	def output_header i
-		@output.puts "\n\n---------------------PROBLEM #{i} ---------------------------"
+		@output.puts "\n\n---------------------PROBLEM #{i} -------
+		--------------------"
 	end
 
 	def optimal_heuristic
@@ -22,7 +23,7 @@ class Knapsack
 		#fills the first row/col with zeros
 		@DP_matrix[0].collect!{|e| e = 0}
 		for i in 0..@size
-			@DP_matrix[i][0] = 0 
+			@DP_matrix[i][0] = 0
 		end
 
 		#fills the matrix
@@ -48,7 +49,7 @@ class Knapsack
 			end
 				i -= 1
 		end
-		
+
 		total_weight = 0
 		items.each do |i|
 				total_weight += @weights[i-1]
@@ -64,7 +65,8 @@ class Knapsack
 				@output.print "(p: #{@profits[i-1]}, w: #{@weights[i-1]}) "
 			end
 			@output.puts "}"
-			@output.puts "knapsack weight: #{total_weight - @weights[items.last]} (max capacity: #{@capacity})"
+			@output.puts "knapsack weight: #{total_weight - @weights[items.last]}
+			(max capacity: #{@capacity})"
 			@output.puts "#########################################################"
 		else
 			@output.puts "################## OPTIMAL HEURISTIC ###################"
@@ -81,7 +83,7 @@ class Knapsack
 	end
 
 	def sahni_heuristic
-		#sorts the profits/weights arrays in 
+		#sorts the profits/weights arrays in
 		#non-incresing order for ratio profit/weight
 		custo_beneficio = Array.new(@size)
 		@size.times do |i|
@@ -91,7 +93,7 @@ class Knapsack
 		custo_beneficio_sorted = custo_beneficio.sort
 
 		profits_sorted = Array.new
-		weights_sorted = Array.new	
+		weights_sorted = Array.new
 		@size.times do |i|
 			index = custo_beneficio_sorted.index(custo_beneficio[i])
 			profits_sorted[i] = @profits[index]
@@ -107,7 +109,7 @@ class Knapsack
 
 		#gets all the combinations up to k elements
 		combinations = Array.new
-		for i in 1..$K do 
+		for i in 1..$K do
 			combinations = combinations + Array(0..@size-1).combination(i).to_a
 		end
 
@@ -140,10 +142,10 @@ class Knapsack
 						_PI = combination_p_sum + _T_PI
 						_S = combination + _T_S
 					end
-				end 
+				end
 			end
-			
-		end	
+
+		end
 
 		@output.puts "#################### SAHNI HEURISTIC ####################"
 		@output.puts "problem size: #{@size}"
@@ -157,7 +159,7 @@ class Knapsack
 		@output.puts "}\ntotal weight: #{result} (max capacity: #{@capacity})"
 
 		@output.puts "##########################################################"
-	end	
+	end
 end
 
 
@@ -168,8 +170,8 @@ entries.each do |filename|
 	File.open(filename, 'r+') do |file|
 		plaintext = file.read
 		plaintext = plaintext.split("\r\n")
-		problems << Knapsack.new(plaintext[0].to_i, 
-					plaintext[1].split(" ").collect{|x| x = x.to_i}, 
+		problems << Knapsack.new(plaintext[0].to_i,
+					plaintext[1].split(" ").collect{|x| x = x.to_i},
 					plaintext[2].split(" ").collect{|x| x = x.to_i},
 					plaintext[3].to_i)
 	end
@@ -186,15 +188,6 @@ problems.each_with_index do |problem, i|
 end
 
 $K = 3
-f.puts "times for sahni_heuristic with k=#{$K}"
-problems.each_with_index do |problem, i|
-	time = Time.now
-	problem.output_header(i)
-	problem.sahni_heuristic
-	f.puts "#{Time.new - time}"
-end
-
-$K = 4
 f.puts "times for sahni_heuristic with k=#{$K}"
 problems.each_with_index do |problem, i|
 	time = Time.now
