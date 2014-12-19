@@ -42,17 +42,7 @@ def hungarian_algorithm adjacency_matrix
         end
       end
     end
-    puts "before correction:"
-    (0..$PROBLEM_SIZE - 1).each do |i|
-      (0..$PROBLEM_SIZE - 1).each do |j|
-        if(vertex_cover.index(i).nil? && vertex_cover.index(j+20).nil?)
-          printf "%3d " % adjacency_matrix[i][j]
-        else
-          printf "%3c " % 'x'
-        end
-      end
-      print "\n"
-    end
+
     (0..$PROBLEM_SIZE - 1).each do |i|
       (0..$PROBLEM_SIZE - 1).each do |j|
         if(vertex_cover.index(i).nil? && vertex_cover.index(j+20).nil?)
@@ -63,25 +53,10 @@ def hungarian_algorithm adjacency_matrix
       end
     end
 
-    puts "after correction(min = #{min}):"
-    (0..$PROBLEM_SIZE - 1).each do |i|
-      (0..$PROBLEM_SIZE - 1).each do |j|
-        if(vertex_cover.index(i).nil? || vertex_cover.index(j+20).nil?)
-          printf "%3d " % adjacency_matrix[i][j]
-        else
-          printf "%3c " % 'x'
-        end
-      end
-      print "\n"
-    end
-
-
     edges = find_zero_weighted_edges(adjacency_matrix)
     left  = Array(0..$PROBLEM_SIZE-1)
     right = Array(0..$PROBLEM_SIZE-1)
     matching = Graphmatch.match(left, right.collect{|c| c = "committee#{c}".to_sym}, Marshal.load(Marshal.dump(edges)))
-    puts matching.size
-    a = gets
 
   end
   return matching
