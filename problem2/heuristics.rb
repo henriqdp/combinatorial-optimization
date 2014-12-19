@@ -179,21 +179,21 @@ entries.each do |filename|
 	end
 end
 
-#f = File.new('benchmarks', 'w')
+f = File.new('benchmarks', 'w')
 
-#f.puts "times for optimal_heuristic:"
+f.puts "times for optimal_heuristic:"
 problems.each_with_index do |problem, i|
 	time = Time.now
 	problem.output_header
 	problem.optimal_heuristic
-#	f.puts "#{Time.now - time}"
+	f.puts "#{Time.now - time}"
 end
 
 $K = 3
-#f.puts "times for sahni_heuristic with k=#{$K}"
+f.puts "times for sahni_heuristic with k=#{$K}"
 problems.each_with_index do |problem, i|
 	time = Time.now
 	problem.output_header
 	problem.sahni_heuristic
-#	f.puts "#{Time.new - time}"
+	f.puts "#{Time.new - time}"
 end
