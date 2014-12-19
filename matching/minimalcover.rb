@@ -1,13 +1,17 @@
-require 'set'
-
 class Graphmatch::MinimalVertexCover
 
 
   def initialize(maximal_matching, zero_weighted_graph)
+    
+    #transforms the hash into an array
+    #every person has a number from 0 to 19
+    #every committee has a number from 20 to 39
     edges = Array.new
     (0..39).each do |i|
       edges[i] = Array.new
     end
+
+    #puts zero_weighted_graph.inspect
 
     maximal_matching.each_pair do |key,value|
       edges[key] << [value.to_s[9..-1].to_i + 20, true]
@@ -22,6 +26,7 @@ class Graphmatch::MinimalVertexCover
       end
     end
 
+    #looks for uncovered (unmatched) vertices
     matched = Array.new(40, false)
     (0..39).each do |i|
       if(edges[i] != [])
@@ -33,11 +38,7 @@ class Graphmatch::MinimalVertexCover
       end
     end
 
-    (0..edges.size-1).each do |edge|
-      print "edge ##{edge} =>"
-      puts edges[edge].inspect
-    end
-
+    #edges_to_be_analyzed = uncovered vertices
     edges_to_be_analyzed = Array.new
     z_set = Array.new
     (0..39).each do |i|
@@ -46,10 +47,41 @@ class Graphmatch::MinimalVertexCover
         z_set << i
       end
     end
-    
-    matched_or_not = false
+
+    #keeps track of the analysed vertices
     visited = Array.new(40, false)
+
+    #puts edges.inspect
+    puts edges_to_be_analyzed.inspect
+
+    mincover = Array.new
+    delete = Array.new
+
+    #vertices reached by no edges are automatically 
+    #added to the minimal cover
+    edges_to_be_analyzed.each do |edge|
+      if edges[edge[0]] == []
+        mincover << edge[0]
+        visited[edge[0]] = true
+        delete << edge
+      end
+    end
+    delete.each do |e|
+      edges_to_be_analyzed.delete(e)
+    end
+    edges.each_with_index do |edge, i|
+      print "#{i} == >"
+      puts edge.inspect
+    end
+    puts edges_to_be_analyzed.inspect
+    puts mincover.inspect
+    gets
+
+    while edges_to_be_analyzed.size > 0
+      current = edges_to_be_analyzed[0][0]
+    end
     
+
     while(edges_to_be_analyzed.size > 0)
       edges[edges_to_be_analyzed[0][0]].each do |edge|
         if edge[1] == edges_to_be_analyzed[0][1] && !visited[edges_to_be_analyzed[0][0]]

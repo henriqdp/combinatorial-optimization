@@ -33,7 +33,7 @@ def hungarian_algorithm adjacency_matrix
 
 
     vertex_cover = find_minimum_vertex_cover matching, edges
-    puts vertex_cover.inspect
+    #puts vertex_cover.inspect
     min = 99
     (0..$PROBLEM_SIZE - 1).each do |i|
       (0..$PROBLEM_SIZE - 1).each do |j|
