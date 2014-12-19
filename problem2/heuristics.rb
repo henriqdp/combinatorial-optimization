@@ -1,17 +1,18 @@
 $K = 4
 
 class Knapsack
-	def initialize size, profits, weights, capacity
+	def initialize size, profits, weights, capacity, filename
 		@size = size
 		@profits = profits
 		@weights = weights
 		@capacity = capacity
 		@output = File.new('results', 'a+')
+		@name = filename
 
 	end
 
-	def output_header i
-		@output.puts "\n\n---------------------PROBLEM #{i} -------
+	def output_header
+		@output.puts "\n\n---------------------PROBLEM #{@name} -------
 		--------------------"
 	end
 
@@ -173,25 +174,26 @@ entries.each do |filename|
 		problems << Knapsack.new(plaintext[0].to_i,
 					plaintext[1].split(" ").collect{|x| x = x.to_i},
 					plaintext[2].split(" ").collect{|x| x = x.to_i},
-					plaintext[3].to_i)
+					plaintext[3].to_i,
+					filename)
 	end
 end
 
-f = File.new('benchmarks', 'w')
+#f = File.new('benchmarks', 'w')
 
-f.puts "times for optimal_heuristic:"
+#f.puts "times for optimal_heuristic:"
 problems.each_with_index do |problem, i|
 	time = Time.now
-	problem.output_header(i)
+	problem.output_header
 	problem.optimal_heuristic
-	f.puts "#{Time.now - time}"
+#	f.puts "#{Time.now - time}"
 end
 
 $K = 3
-f.puts "times for sahni_heuristic with k=#{$K}"
+#f.puts "times for sahni_heuristic with k=#{$K}"
 problems.each_with_index do |problem, i|
 	time = Time.now
-	problem.output_header(i)
+	problem.output_header
 	problem.sahni_heuristic
-	f.puts "#{Time.new - time}"
+#	f.puts "#{Time.new - time}"
 end
