@@ -6,12 +6,13 @@ class Graphmatch::MinimalVertexCover
     #transforms the hash into an array
     #every person has a number from 0 to 19
     #every committee has a number from 20 to 39
+    #the array is a list of adjacencies with 'true'
+    #for the edges that belong to the minimal matching
+    #and false to those that do not
     edges = Array.new
     (0..39).each do |i|
       edges[i] = Array.new
     end
-
-    #puts zero_weighted_graph.inspect
 
     maximal_matching.each_pair do |key,value|
       edges[key] << [value.to_s[9..-1].to_i + 20, true]
@@ -22,6 +23,7 @@ class Graphmatch::MinimalVertexCover
       value.each_pair do |k, v|
         if(edges[key].index([k.to_s[9..-1].to_i + 20, true]).nil?)
           edges[key] << [k.to_s[9..-1].to_i + 20, false]
+          edges[k.to_s[9..-1].to_i + 20] << [key, false]
         end
       end
     end
@@ -40,19 +42,14 @@ class Graphmatch::MinimalVertexCover
 
     #edges_to_be_analyzed = uncovered vertices
     edges_to_be_analyzed = Array.new
-    z_set = Array.new
     (0..39).each do |i|
       if matched[i] == false
-        edges_to_be_analyzed << [i,false]
-        z_set << i
+        edges_to_be_analyzed << [i,true]
       end
     end
 
     #keeps track of the analysed vertices
     visited = Array.new(40, false)
-
-    #puts edges.inspect
-    puts edges_to_be_analyzed.inspect
 
     mincover = Array.new
     delete = Array.new
@@ -69,34 +66,42 @@ class Graphmatch::MinimalVertexCover
     delete.each do |e|
       edges_to_be_analyzed.delete(e)
     end
-    edges.each_with_index do |edge, i|
-      print "#{i} == >"
-      puts edge.inspect
-    end
-    puts edges_to_be_analyzed.inspect
-    puts mincover.inspect
-    gets
 
-    while edges_to_be_analyzed.size > 0
-      current = edges_to_be_analyzed[0][0]
-    end
-    
 
-    while(edges_to_be_analyzed.size > 0)
-      edges[edges_to_be_analyzed[0][0]].each do |edge|
-        if edge[1] == edges_to_be_analyzed[0][1] && !visited[edges_to_be_analyzed[0][0]]
-          z_set << edge[0]
-          edges_to_be_analyzed << [edge[0], !edges_to_be_analyzed[0][1]]
-          visited[edges_to_be_analyzed[0][0]] = true
+  #walks through alternating paths adding
+  #nodes to the minimal cover
+   while edges_to_be_analyzed.size > 0
+      edge = edges_to_be_analyzed.shift
+      visited[edge[0]] = true
+      if edge[1] == true 
+        edges[edge[0]].each do |connected_edge|
+          if connected_edge[1] == false
+            mincover << connected_edge[0]
+            edges_to_be_analyzed << connected_edge
+          end
+        end
+      elsif edge[1] == false
+        edges[edge[0]].each do |connected_edge|
+          if connected_edge[1] == true
+            edges_to_be_analyzed << connected_edge
+          end
         end
       end
+   end
 
-      edges_to_be_analyzed = edges_to_be_analyzed[1..-1]
-      matched_or_not = !matched_or_not
+
+#adds the nodes that do not belong to 
+#alternating paths to the minimal cover
+    (0..19).each do |person|
+      edges[person].each do |v|
+        if v[1] == true && visited[person] == false
+          mincover << person
+        end
+      end
     end
 
-    @edges = edges
-    @minimal_cover = (Array(0..19) - z_set) + (Array(20..39) & z_set)
+    mincover &= mincover
+    @minimal_cover = mincover
   end
 
   def minimal_vertex_cover

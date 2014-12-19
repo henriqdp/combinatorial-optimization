@@ -33,6 +33,7 @@ def hungarian_algorithm adjacency_matrix
 
 
     vertex_cover = find_minimum_vertex_cover matching, edges
+    #puts vertex_cover.inspect
     min = 99
     (0..$PROBLEM_SIZE - 1).each do |i|
       (0..$PROBLEM_SIZE - 1).each do |j|
@@ -113,11 +114,4 @@ end
   end
 end
 
-result = hungarian_algorithm(cost_matrix)
-File.open('result', 'w') do |file|
-  result.each_pair do |k, v|
-    file.printf "Person %2d is assigned to the committee %2d. ", k + 1, v.to_s[9..-1].to_i + 1
-    file.puts "His preferences were, in order, #{preferences[k].inspect}"
-  end
-end
-
+puts hungarian_algorithm(cost_matrix).inspect
